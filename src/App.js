@@ -15,15 +15,19 @@ function App() {
     localStorage.setItem("count", count);
   }, [count]);
   
-  const handleClick = () => {
+  const handleClickCountUp = () => {
     setCount(count + 1); // カウントアップ
+  };
+    const handleClickCountDown = () => {
+    setCount(count - 1); // カウントダウン
   };
 
   return (
     <div style={{ textAlign: 'center', marginTop: '100px' }}>
       <h1>カウントアップアプリ</h1>
       <p>現在のカウント: {count}</p>
-      <button onClick={handleClick}>+1</button>
+      <button onClick={handleClickCountUp}>+1</button>
+      <button onClick={handleClickCountDown}>-1</button>
     </div>
   );
 }
