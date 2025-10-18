@@ -15,9 +15,18 @@ export default function TodoApp() {
   });
   const [text, setText] = useState("");
 
+  const [sortByChecked, setSortByChecked] = useState(() => {
+    const s = localStorage.getItem("todos.sortByChecked");
+    return s ? JSON.parse(s) : false;
+  });
+
   useEffect(() => {
       localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
+
+  useEffect(() => {
+    localStorage.setItem("todos.sortByChecked", JSON.stringify(sortByChecked));
+  }, [sortByChecked]);
 
   const addTodo = () => {
     if (!text.trim()) return;
@@ -36,6 +45,23 @@ export default function TodoApp() {
   const deleteTodo = (id) => {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
+
+  const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
+  const sortTodos = (items) => {
+    const arr = [...items];
+
+    // 基本は id 昇順（追加順）
+    arr.sort((a, b) => cmp(a.id, b.id));
+
+    if (sortByChecked) {
+      arr.sort((a, b) => (a.done === b.done ? 0 : a.done ? 1 : -1));
+    }
+    return arr;
+  }
+
+  const sortedTodos = sortTodos(todos);
+
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1>TODOアプリ</h1>
@@ -47,20 +73,27 @@ export default function TodoApp() {
       />
       <button onClick={addTodo}>追加</button>
 
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <button onClick={() => setSortByChecked((v) => !v)}>
+          チェック並べ替え: {sortByChecked ? "ON" : "OFF"}
+        </button>
+      </div>
+
       <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <input
-              type="checkbox"
-              checked={todo.done}
-              onChange={() => toggleTodo(todo.id)}
-            />
-            <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>
-              {todo.text}
-            </span>
-          </li>
-        ))}
+        {sortedTodos
+          .map((todo) => (
+            <li key={todo.id}>
+              <input
+                type="checkbox"
+                checked={todo.done}
+                onChange={() => toggleTodo(todo.id)}
+              />
+              <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>
+                {todo.text}
+              </span>
               <button onClick={() => deleteTodo(todo.id)}>削除</button>
+            </li>
+          ))}
       </ul>
     </div>
   );
