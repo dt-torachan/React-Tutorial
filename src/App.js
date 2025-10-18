@@ -24,6 +24,7 @@ function App() {
       <h1>カウントアップアプリ</h1>
       <p>現在のカウント: {count}</p>
       <button onClick={handleClick}>+1</button>
+      <button onClick={handleClick}>-1</button>
     </div>
   );
 }
