@@ -33,6 +33,9 @@ export default function TodoApp() {
     )));
   };
 
+  const deleteTodo = (id) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  };
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1>TODOアプリ</h1>
@@ -57,6 +60,7 @@ export default function TodoApp() {
             </span>
           </li>
         ))}
+              <button onClick={() => deleteTodo(todo.id)}>削除</button>
       </ul>
     </div>
   );
